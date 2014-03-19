@@ -60,7 +60,7 @@ def addTweet(self, data):
 
 
 def terms():
-	keywords = ['dissent','martial','curfew','protest','arrested']		
+	keywords = ['dissentin','dissent','martial','curfew','protest','arrested']		
 	return keywords
 
 	
@@ -79,7 +79,7 @@ def getKeywords(self, data):
 
 class MyStreamer(TwythonStreamer):	
 
-	createDB()
+# 	createDB()
 	
 	def on_success(self, data):	
 		if 'text' in data:
