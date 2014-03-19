@@ -13,12 +13,16 @@ twitter = Twython(APP_KEY, APP_SECRET)
 OAUTH_TOKEN = ''
 OAUTH_TOKEN_SECRET = ''
 ## 
-
 def createDB():
-	conn = sqlite3.connect("tweets.db")
-	c = conn.cursor()
-	c.execute('create table tweets (id text, date text, tweet text, geo text, keyword text)')
-	print 'created database'
+	name = 'tweets.db'
+	if os.path.isfile(name):
+		print 'found %s, resuming scraping' % name
+	
+	else:
+		conn = sqlite3.connect(name)
+		c = conn.cursor()
+		c.execute('create table tweets (id text, date text, tweet text, geo text, keyword text)')
+		print 'created database'
 
 def getDate(self, data):
 	d = string.split( data['created_at'], ' ')
@@ -79,7 +83,7 @@ def getKeywords(self, data):
 
 class MyStreamer(TwythonStreamer):	
 
-# 	createDB()
+	createDB()
 	
 	def on_success(self, data):	
 		if 'text' in data:
