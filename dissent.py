@@ -14,7 +14,6 @@ OAUTH_TOKEN = ''
 OAUTH_TOKEN_SECRET = ''
 ## 
 
-
 def createDB():
 	conn = sqlite3.connect("tweets.db")
 	c = conn.cursor()
@@ -50,11 +49,19 @@ def addTweet(self, data):
 	c.execute('insert into tweets values (?,?,?,?)', t)
 	conn.commit()
 	c.close()
+	
 
 	print 'added tweet id %s' % tweet['id']
 	print '----------date %s' % tweet['date']
 	print '---------tweet %s' % tweet['text']
 	print '-----------geo %s' % tweet['geo']
+
+def terms():
+	keywords = ['' 'dissentin', 'protest', 'unrest', 'riot', 
+			    'explosion', 'extremist', 'demonstration',
+			    'demonstrators', 'martial', 'curfew'
+				'']
+	return keywords
 
 class MyStreamer(TwythonStreamer):	
 
@@ -70,8 +77,6 @@ class MyStreamer(TwythonStreamer):
 
 
 
-keywords = ['protest','dissent','bomb','terrorist','unrest','forces','riot','explosion','extremist','demonstrators','martial']
-		
-keyword = keywords[0]  
+keyword = terms()
 stream = MyStreamer(APP_KEY, APP_SECRET,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-stream.statuses.filter(track=keyword)        
+stream.statuses.filter(track=keyword)  
