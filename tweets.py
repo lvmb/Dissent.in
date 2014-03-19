@@ -7,12 +7,13 @@ def main(cursor):
         tdate = tweet[1]
         text = tweet[2]
         geo = tweet[3]
-        t = str(tdate + text + geo)
+        keywords = tweet[4]
         
         print '-----tweet: %s ' % text
         print '------date: %s'  % tdate
         print '-------geo: %s'  % geo
         print '----length: %s' % len(text)
+        print '--keywords: %s' % keywords
         print '\n'
 
 if __name__ == '__main__':
