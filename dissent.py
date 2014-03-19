@@ -17,7 +17,7 @@ OAUTH_TOKEN_SECRET = ''
 def createDB():
 	conn = sqlite3.connect("tweets.db")
 	c = conn.cursor()
-	c.execute('create table tweets (id text, date text, tweet text, geo text)')
+	c.execute('create table tweets (id text, date text, tweet text, geo text, keyword text)')
 	print 'created database'
 
 def getDate(self, data):
@@ -38,15 +38,16 @@ def buildTweet(self, data):
 	tweet['date'] = getDate(self, data)
 	tweet['text'] = getText(self, data)
 	tweet['geo'] = str(data['geo'])
+	tweet['keyword'] = getKeywords(self, data)
 	return tweet
 
 def addTweet(self, data):
 	tweet = buildTweet(self, data)
-	t = (tweet['id'], tweet['date'], tweet['text'], tweet['geo'])	
+	t = (tweet['id'], tweet['date'], tweet['text'], tweet['geo'], tweet['keyword'])	
 	conn = sqlite3.connect("tweets.db")
 	conn.text_factory = str
 	c = conn.cursor()
-	c.execute('insert into tweets values (?,?,?,?)', t)
+	c.execute('insert into tweets values (?,?,?,?,?)', t)
 	conn.commit()
 	c.close()
 	
@@ -55,13 +56,26 @@ def addTweet(self, data):
 	print '----------date %s' % tweet['date']
 	print '---------tweet %s' % tweet['text']
 	print '-----------geo %s' % tweet['geo']
+	print '-------keyword %s' % tweet['keyword'] 
+
 
 def terms():
-	keywords = ['' 'dissentin', 'protest', 'unrest', 'riot', 
-			    'explosion', 'extremist', 'demonstration',
-			    'demonstrators', 'martial', 'curfew'
-				'']
+	keywords = ['dissent','martial','curfew','protest','arrested']		
 	return keywords
+
+	
+def getKeywords(self, data):
+	tweet = getText(self, data)
+	keywords = terms()
+	matched = {}
+	unmatched = {}
+
+	for i in range(len(keywords)):
+ 		if keywords[i] in tweet:
+ 			matched[i] = keywords[i]
+ 			return matched[i]
+ 		else:
+ 			unmatched[i] = keywords[i]
 
 class MyStreamer(TwythonStreamer):	
 
@@ -77,6 +91,6 @@ class MyStreamer(TwythonStreamer):
 
 
 
-keyword = terms()
+keywords = terms()
 stream = MyStreamer(APP_KEY, APP_SECRET,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-stream.statuses.filter(track=keyword)  
+stream.statuses.filter(track=keywords)        
