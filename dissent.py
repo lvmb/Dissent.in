@@ -1,4 +1,4 @@
-import json, sqlite3, string, sys, time
+import json, sqlite3, string, sys, time, os.path
 from twython import TwythonStreamer, Twython
 
 ## Need to actually figure out how to do this securely and properly.
@@ -13,6 +13,8 @@ twitter = Twython(APP_KEY, APP_SECRET)
 OAUTH_TOKEN = ''
 OAUTH_TOKEN_SECRET = ''
 ## 
+
+
 def createDB():
 	name = 'tweets.db'
 	if os.path.isfile(name):
@@ -57,14 +59,11 @@ def addTweet(self, data):
 	
 
 	print 'added tweet id %s' % tweet['id']
-	print '----------date %s' % tweet['date']
-	print '---------tweet %s' % tweet['text']
-	print '-----------geo %s' % tweet['geo']
 	print '-------keyword %s' % tweet['keyword'] 
 
 
 def terms():
-	keywords = ['dissentin','dissent','martial','curfew','protest','arrested']		
+	keywords = ['bomb','dissent','protest','demonstrator']		
 	return keywords
 
 	
