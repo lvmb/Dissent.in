@@ -63,7 +63,7 @@ def addTweet(self, data):
 
 
 def terms():
-	keywords = ['bomb','dissent','protest','demonstrator']		
+	keywords = ['dissent','protest','demonstrator']		
 	return keywords
 
 	
