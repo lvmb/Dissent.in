@@ -1,6 +1,13 @@
 Dissent.in
 ==========
-Python script for tracking worldwide dissent through the twitter live stream. Very early in development, could use some help. Eventually I want to the program to be able to make relatively accurate predictions of future acts of dissent, and at least provide the public a place to track worldwide dissent.
+
+The humble beginnings of something big?
+
+This python script intends to scan, track, and analyze in near real time - levels of dissent and political upheval around the globe - using the twitter live stream. 
+
+As we have seen numerous times over, twitter has played an enourmous part in numerous world-wide acts of dissent and discord. Dissent.in ultimately would like to use it real time twitter stream to analyze, predict, and alert. Hopefully before mass discord. 
+
+This is very early in development, I am completely new to python, and I could use some help. If you are a scientist, programmer, engineer, or just someone who thinks it is a neat idea, please contribute!
 
 
 Quickstart
