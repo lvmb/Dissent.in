@@ -1,4 +1,15 @@
-import sqlite3
+import sqlite3, os.path, sys
+
+def connectDB():
+	name = str(sys.argv[1])	
+	if os.path.isfile(name):
+		print 'Connecting to %s' % name
+		conn = sqlite3.connect(name)
+		conn.text_factory = str
+		cur = conn.cursor()
+		main(cur)		
+	else:
+		print 'No database found'
 
 def count_tweets(cursor, cmd):
 	lines = 0
@@ -29,21 +40,11 @@ def show_tweet_count(cursor):
 	cmd = "select * from tweets"
 	print '-----All Tweets: %s' % count_tweets(cursor, cmd)
 
-
-def filter_by_keyword(cursor):
- 	keyword = raw_input('Keyword > ')
- 	t = (keyword, )
- 	cursor.execute("select * from tweets where keyword = ?", t)
- 	for tweet in cursor.fetchall():
- 		print build_tweet(cursor, tweet)
-
+ 
 def main(cursor):
 
+	show_tweet_count(cursor)
 	show_tweets(cursor)
-	filter_by_keyword(cursor)
 	
 if __name__ == '__main__':
-    conn = sqlite3.connect('tweets.db')
-    conn.text_factory = str
-    cur = conn.cursor()
-    main(cur)
+    connectDB()
