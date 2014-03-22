@@ -14,19 +14,21 @@ OAUTH_TOKEN = ''
 OAUTH_TOKEN_SECRET = ''
 ## 
 
-
-def createDB():
-	name = 'tweets.db'
-	if os.path.isfile(name):
-		print 'found %s, resuming scraping' % name
+def createDB(name):
+	""" Connect to database. If it doesn't exist, then create it. """	
+	ext = '.db'
+	db = name+ext
 	
+	if os.path.isfile(db):
+		print 'found %s, resuming scraping' % db
 	else:
-		conn = sqlite3.connect(name)
+		conn = sqlite3.connect(db)
 		c = conn.cursor()
 		c.execute('create table tweets (id text, date text, tweet text, geo text, keyword text)')
 		print 'created database'
 
 def getDate(self, data):
+	""" Parse the date of a raw tweet output as YYYY-MM-DD HH:MM:SS """	
 	d = string.split( data['created_at'], ' ')
 	ds = ' '.join([d[1], d[2], d[3], d[5] ])
 	dt = time.strptime(ds, '%b %d %H:%M:%S %Y')
@@ -34,11 +36,29 @@ def getDate(self, data):
 	return d
 	
 def getText(self, data):
+	""" Parse the actual text of a raw tweet and do stuff do it """	
 	t = str(data['text'].encode('utf-8'))
-	t = t.lower()
 	return t
 
+def terms():
+	""" The keywords to scan the tweet stream for """	
+	keywords = ['dissent','protest','sosvenezuela']		
+	return keywords
+
+	
+def getKeywords(self, data):
+	""" Parse returned tweet for keywords """	
+	tweet = getText(self, data)
+	tweet = tweet.lower()
+	keywords = terms()
+	
+	for i in range(len(keywords)):
+ 		if keywords[i] in tweet:
+ 			return keywords[i]
+	
+
 def buildTweet(self, data):	
+	""" Build the tweet """	
 	tweet = {}
 	tweet['id'] = str(data['id'])
 	tweet['date'] = getDate(self, data)
@@ -47,7 +67,9 @@ def buildTweet(self, data):
 	tweet['keyword'] = getKeywords(self, data)
 	return tweet
 
+
 def addTweet(self, data):
+	""" Add tweet to database """	
 	tweet = buildTweet(self, data)
 	t = (tweet['id'], tweet['date'], tweet['text'], tweet['geo'], tweet['keyword'])	
 	conn = sqlite3.connect("tweets.db")
@@ -58,31 +80,13 @@ def addTweet(self, data):
 	c.close()
 	
 
-	print 'added tweet id %s' % tweet['id']
-	print '-------keyword %s' % tweet['keyword'] 
-
-
-def terms():
-	keywords = ['dissent','protest','demonstrator']		
-	return keywords
-
-	
-def getKeywords(self, data):
-	tweet = getText(self, data)
-	keywords = terms()
-	matched = {}
-	unmatched = {}
-
-	for i in range(len(keywords)):
- 		if keywords[i] in tweet:
- 			matched[i] = keywords[i]
- 			return matched[i]
- 		else:
- 			unmatched[i] = keywords[i]
+	print 'added tweet id--> %s' % tweet['id']
+	print 'tweet keyword---> %s' % tweet['keyword'] 
+	print '\n'
 
 class MyStreamer(TwythonStreamer):	
 
-	createDB()
+	createDB(name="tweets")
 	
 	def on_success(self, data):	
 		if 'text' in data:
@@ -96,4 +100,4 @@ class MyStreamer(TwythonStreamer):
 
 keywords = terms()
 stream = MyStreamer(APP_KEY, APP_SECRET,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-stream.statuses.filter(track=keywords)        
+stream.statuses.filter(track=keywords)     
